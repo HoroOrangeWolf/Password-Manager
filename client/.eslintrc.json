@@ -22,7 +22,12 @@
   "parser": "@typescript-eslint/parser",
   "rules": {
     "import/no-unresolved": "off",
+    "import/prefer-default-export": ["off"],
     "react/jsx-filename-extension": ["off"],
+    "react/require-default-props": ["off"],
+    "react/jsx-props-no-spreading": ["off"],
+    "@typescript-eslint/ban-ts-comment": ["off"],
+    "react-hooks/exhaustive-deps": ["off"],
     "react/function-component-definition": [
       2,
       {
