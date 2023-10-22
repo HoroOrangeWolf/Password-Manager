@@ -7,3 +7,11 @@ export type PasswordType = {
     lastModified: number;
     createdAt: number;
 }
+
+export type AddPasswordRequest = {
+    name: string;
+    login: string;
+    password: string;
+    pageUrl: string;
+    masterKey: string;
+}

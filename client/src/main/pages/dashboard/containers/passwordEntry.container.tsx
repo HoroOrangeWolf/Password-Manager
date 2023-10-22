@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Typography } from 'antd';
 import { connect, ConnectedProps } from 'react-redux';
 import React from 'react';
-import { PasswordType } from '../../../api/password/types/password.type';
+import { PasswordType } from '../../../api/folder/types/password.type';
 import { MainStoreStateType } from '../../../store/types/mainStore.type';
 import { selectCurrentSelectedPassword } from '../../../store/slices/passwords/selectors/password.selectors';
 

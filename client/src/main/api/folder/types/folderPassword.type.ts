@@ -1,4 +1,4 @@
-import { PasswordType } from '../../password/types/password.type';
+import { PasswordType } from './password.type';
 
 export type FolderPasswordType = {
     id: string;
@@ -7,4 +7,8 @@ export type FolderPasswordType = {
     passwordEntries: PasswordType[];
     lastModified: number;
     createdAt: number;
+}
+
+export type AddFolderRequest = {
+    name: string;
 }

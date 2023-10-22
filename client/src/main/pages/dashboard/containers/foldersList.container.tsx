@@ -1,14 +1,26 @@
 import styled from 'styled-components';
 import React, { useMemo } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { Collapse } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { MainStoreStateType } from '../../../store/types/mainStore.type';
-import { selectCurrentPasswords, selectFolders } from '../../../store/slices/passwords/selectors/password.selectors';
+import { selectFolders } from '../../../store/slices/passwords/selectors/password.selectors';
 import FolderListEntryContainer from './folderListEntry.container';
+import { openCreateFolderDialog } from '../../../store/slices/dialogs/dialog.slice';
 
 const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const StyledWrapper = styled.div`
   flex: 2;
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 type PropsType = {
@@ -24,9 +36,23 @@ const FoldersListContainer = (props: PropsType) => {
   ), [props.folders]);
 
   return (
-    <StyledContainer>
-      {foldersElements}
-    </StyledContainer>
+    <StyledWrapper>
+      <Collapse defaultActiveKey={['1']}>
+        <Collapse.Panel
+          header={(
+            <HeaderWrapper onClick={() => props.openCreateFolderDialog()}>
+              Folder
+              <PlusOutlined />
+            </HeaderWrapper>
+)}
+          key="1"
+        >
+          <StyledContainer>
+            {foldersElements}
+          </StyledContainer>
+        </Collapse.Panel>
+      </Collapse>
+    </StyledWrapper>
   );
 };
 
@@ -34,7 +60,11 @@ const mapStateToProps = (state: MainStoreStateType) => ({
   folders: selectFolders(state),
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = {
+  openCreateFolderDialog,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type ConnectorType = ConnectedProps<typeof connector>;
 

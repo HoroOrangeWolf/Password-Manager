@@ -1,14 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FetchableElementType } from '../../../shared/types/fetchableElement.type';
 import { UserType } from '../../../api/user/types/user.type';
 import FetchingStatusConstant from '../../../shared/constant/fetchingStatus.constant';
 import { fetchCurrentUser } from './thunks/context.thunks';
 
 type InitialType = {
-    currentUser: FetchableElementType<UserType>
+    currentUser: FetchableElementType<UserType>,
+  isBlockedNavigation: boolean;
 }
 
 const initialState: InitialType = {
+  isBlockedNavigation: false,
   currentUser: {
     status: FetchingStatusConstant.PENDING,
   },
@@ -17,7 +19,11 @@ const initialState: InitialType = {
 const contextSlice = createSlice({
   name: 'context',
   initialState,
-  reducers: {},
+  reducers: {
+    setNavigationBlock: (state, action: PayloadAction<boolean>) => {
+      state.isBlockedNavigation = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCurrentUser.pending, (state) => {
@@ -37,5 +43,7 @@ const contextSlice = createSlice({
       });
   },
 });
+
+export const { setNavigationBlock } = contextSlice.actions;
 
 export default contextSlice;

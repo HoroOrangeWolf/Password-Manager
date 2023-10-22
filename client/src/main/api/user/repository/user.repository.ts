@@ -8,6 +8,10 @@ const fetchCurrentUser = async (): Promise<UserType> => {
   return response.data;
 };
 
+const loginUser = async () => {
+
+};
+
 const UserRepository = {
   fetchCurrentUser,
 };

@@ -7,6 +7,7 @@ import FoldersListContainer from './containers/foldersList.container';
 import PasswordListContainer from './containers/passwordList.container';
 import { MainStoreStateType } from '../../store/types/mainStore.type';
 import { selectIsFetchingFolders } from '../../store/slices/passwords/selectors/password.selectors';
+import AddNewFolderDialog from './dialogs/addNewFolder.dialog';
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -28,13 +29,16 @@ const DashboardContainer = (props: PropsType) => {
   }
 
   return (
-    <StyledContainer>
-      <FoldersListContainer />
-      <PasswordListContainer />
-      <StyledRightPanel>
-        <Outlet />
-      </StyledRightPanel>
-    </StyledContainer>
+    <>
+      <AddNewFolderDialog />
+      <StyledContainer>
+        <FoldersListContainer />
+        <PasswordListContainer />
+        <StyledRightPanel>
+          <Outlet />
+        </StyledRightPanel>
+      </StyledContainer>
+    </>
   );
 };
 
