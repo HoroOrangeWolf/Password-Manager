@@ -1,8 +1,9 @@
 package com.password.manager.core.rest;
 
 
+import com.password.manager.core.rest.models.MessageModel;
 import com.password.manager.core.rest.models.RegisterRequest;
-import com.password.manager.core.user.UserService;
+import com.password.manager.core.service.UserFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,18 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/register")
 public class RegisterRest {
-    private final UserService userFacade;
+    private final UserFacade userFacade;
 
     @PostMapping
     @PreAuthorize("isAnonymous()")
-    public ResponseEntity<String> registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
-        try {
-            userFacade.registerUser(registerRequest);
-            log.info("Registered user={}", registerRequest.email());
-            return ResponseEntity.ok("Created new account");
-        } catch (Exception e) {
-            log.error("Couldn't create new account ", e);
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<MessageModel> registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
+        userFacade.registerUser(registerRequest);
+        log.info("Registered user={}", registerRequest.email());
+        return ResponseEntity.ok(new MessageModel("Created new account"));
     }
 }

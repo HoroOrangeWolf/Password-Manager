@@ -21,13 +21,43 @@
   ],
   "parser": "@typescript-eslint/parser",
   "rules": {
+    "no-param-reassign": [
+      "off"
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 160
+      }
+    ],
     "import/no-unresolved": "off",
-    "import/prefer-default-export": ["off"],
-    "react/jsx-filename-extension": ["off"],
-    "react/require-default-props": ["off"],
-    "react/jsx-props-no-spreading": ["off"],
-    "@typescript-eslint/ban-ts-comment": ["off"],
-    "react-hooks/exhaustive-deps": ["off"],
+    "import/prefer-default-export": [
+      "off"
+    ],
+    "react/jsx-filename-extension": [
+      "off"
+    ],
+    "react/require-default-props": [
+      "off"
+    ],
+    "react/jsx-props-no-spreading": [
+      "off"
+    ],
+    "@typescript-eslint/ban-ts-comment": [
+      "off"
+    ],
+    "react-hooks/exhaustive-deps": [
+      "off"
+    ],
+    "no-use-before-define":  [
+      "off"
+    ],
+    "@typescript-eslint/ban-types": [
+      "off"
+    ],
+    "react/destructuring-assignment": [
+      "off"
+    ],
     "react/function-component-definition": [
       2,
       {

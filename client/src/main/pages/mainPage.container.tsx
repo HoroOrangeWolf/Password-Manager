@@ -1,10 +1,16 @@
 import {
-  Outlet, useLocation, useNavigate,
+  Outlet,
+  useLocation,
+  useNavigate,
 } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from 'antd';
-import React from 'react';
+import { Button, Spin } from 'antd';
+import React, { useEffect } from 'react';
 import { isEmpty } from 'lodash';
+import { connect, ConnectedProps } from 'react-redux';
+import { MainStoreStateType } from '../store/types/mainStore.type';
+import { selectCurrentUserFetching } from '../store/slices/context/selectors/context.selector';
+import { fetchCurrentUser } from '../store/slices/context/thunks/context.thunks';
 
 const StyledContainer = styled.div`
   display: flex;
@@ -12,6 +18,7 @@ const StyledContainer = styled.div`
   gap: 15px;
   min-width: 300px;
 `;
+
 const StyledOutletDiv = styled.div`
   width: 100%;
   height: 90vh;
@@ -19,9 +26,18 @@ const StyledOutletDiv = styled.div`
   align-items: center;
   display: flex;
 `;
-const StartPageContainer = () => {
+
+type PropsType = {
+
+} & ConnectorProps;
+
+const MainPageContainer = (props: PropsType) => {
   const navigation = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    props.fetchCurrentUser();
+  }, []);
 
   const goToLoginPage = () => {
     navigation('login');
@@ -30,6 +46,14 @@ const StartPageContainer = () => {
   const goToRegister = () => {
     navigation('register');
   };
+
+  if (props.isFetchingCurrentUser) {
+    return (
+      <StyledOutletDiv>
+        <Spin size="large" />
+      </StyledOutletDiv>
+    );
+  }
 
   if (!(isEmpty(location.pathname) || location.pathname === '/')) {
     return (
@@ -61,4 +85,16 @@ const StartPageContainer = () => {
   );
 };
 
-export default StartPageContainer;
+const mapStateToProps = (state: MainStoreStateType) => ({
+  isFetchingCurrentUser: selectCurrentUserFetching(state),
+});
+
+const mapDispatchToProps = {
+  fetchCurrentUser,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ConnectorProps = ConnectedProps<typeof connector>
+
+export default connector(MainPageContainer);

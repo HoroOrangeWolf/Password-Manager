@@ -19,7 +19,9 @@ public class FolderMapper {
                 folderEntity.getPasswordEntities()
                         .stream()
                         .map(passwordMapper::mapEntityToDto)
-                        .toList()
+                        .toList(),
+                folderEntity.getModifiedDate(),
+                folderEntity.getCreatedDate()
         );
     }
 }

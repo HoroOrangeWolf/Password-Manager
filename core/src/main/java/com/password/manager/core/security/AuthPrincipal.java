@@ -1,9 +1,9 @@
 package com.password.manager.core.security;
 
 
+import com.password.manager.core.db.entities.AccountEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,11 +11,13 @@ import java.util.Collection;
 import java.util.Collections;
 
 @AllArgsConstructor
-public class AuthenticationPrincipal implements UserDetails {
+public class AuthPrincipal implements UserDetails {
     private String email;
     private String username;
     private String password;
     private boolean isActivated;
+    @Getter
+    private AccountEntity accountEntity;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

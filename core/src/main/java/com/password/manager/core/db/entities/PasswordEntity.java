@@ -1,15 +1,17 @@
 package com.password.manager.core.db.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "password_entity")
+@NoArgsConstructor
+@AllArgsConstructor
 public class PasswordEntity extends AbstractAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,5 +33,4 @@ public class PasswordEntity extends AbstractAuditableEntity {
     @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
     @JoinColumn(name = "folder_entity_id", nullable = false)
     private FolderEntity folderEntity;
-
 }

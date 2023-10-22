@@ -16,7 +16,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return accountRepository
                 .findByEmail(username)
-                .map(entity -> new AuthenticationPrincipal(entity.getEmail(), entity.getUsername(), entity.getPassword(), entity.isActivated()))
+                .map(entity -> new AuthPrincipal(
+                                entity.getEmail(),
+                                entity.getUsername(),
+                                entity.getPassword(),
+                                entity.isActivated(),
+                                entity
+                        )
+                )
                 .orElseThrow(() -> new UsernameNotFoundException("User by email " + username + " not found!"));
     }
 }

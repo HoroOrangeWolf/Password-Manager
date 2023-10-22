@@ -1,19 +1,17 @@
 package com.password.manager.core.db.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "folder_entity")
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class FolderEntity extends AbstractAuditableEntity {
 
     @Id
@@ -32,5 +30,5 @@ public class FolderEntity extends AbstractAuditableEntity {
     private AccountEntity accountEntity;
 
     @OneToMany(mappedBy = "folderEntity", orphanRemoval = true)
-    private Set<PasswordEntity> passwordEntities = new LinkedHashSet<>();
+    private List<PasswordEntity> passwordEntities = new LinkedList<>();
 }
