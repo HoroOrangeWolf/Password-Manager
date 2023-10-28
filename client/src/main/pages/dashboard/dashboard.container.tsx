@@ -10,7 +10,8 @@ import { selectIsFetchingFolders } from '../../store/slices/passwords/selectors/
 import AddNewFolderDialog from './dialogs/addNewFolder.dialog';
 
 const StyledContainer = styled.div`
-  width: 100%;
+  width: 100vw;
+  height: 80vh;
   display: flex;
   flex-direction: row;
 `;

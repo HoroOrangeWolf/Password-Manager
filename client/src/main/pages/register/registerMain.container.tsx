@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Typography } from 'antd';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
 import SimpleControlledInputContainer from '../../shared/fields/simpleControlledInput.container';
+import { registerUser } from '../../store/slices/context/thunks/context.thunks';
+import { RegisterRequestType } from '../../api/user/types/registerRequest.type';
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -43,7 +46,13 @@ const defaultValues: FormData = {
   password: '',
 };
 
-const RegisterMainContainer = () => {
+type PropsType = {
+
+} & ConnectorProps
+
+const RegisterMainContainer = (props: PropsType) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<FormData>({
     defaultValues,
     // @ts-ignore
@@ -54,8 +63,15 @@ const RegisterMainContainer = () => {
 
   const { control } = form;
 
-  const onSubmit = (data: FormData) => {
-    console.log('Data', data);
+  const onSubmit = async (data: FormData) => {
+    setIsLoading(true);
+    try {
+      await props.registerUser(data as RegisterRequestType);
+    } catch (e) {
+      console.error("Couldn't register user", e);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -91,6 +107,7 @@ const RegisterMainContainer = () => {
         <Button
           type="primary"
           size="large"
+          disabled={isLoading}
           onClick={(e) => {
             // @ts-ignore
             e.currentTarget?.form?.requestSubmit();
@@ -100,6 +117,7 @@ const RegisterMainContainer = () => {
         </Button>
         <Button
           size="large"
+          disabled={isLoading}
           onClick={() => navigator('/')}
         >
           Back
@@ -109,4 +127,14 @@ const RegisterMainContainer = () => {
   );
 };
 
-export default RegisterMainContainer;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = {
+  registerUser,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ConnectorProps = ConnectedProps<typeof connector>
+
+export default connector(RegisterMainContainer);

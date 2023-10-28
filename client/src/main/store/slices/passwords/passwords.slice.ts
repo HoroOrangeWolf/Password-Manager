@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { has } from 'lodash';
+import { has, head } from 'lodash';
 import { FolderPasswordType } from '../../../api/folder/types/folderPassword.type';
 import { FetchableElementType } from '../../../shared/types/fetchableElement.type';
-import { addFolder, addPassword } from './thunks/password.thunks';
+import { addFolder, addPassword, unlockVault } from './thunks/password.thunks';
 import FetchingStatusConstant from '../../../shared/constant/fetchingStatus.constant';
 
 type InitialState = {
@@ -60,6 +60,25 @@ const passwordsSlice = createSlice({
           ...passwords.passwordEntries,
           response,
         ];
+      })
+      .addCase(unlockVault.pending, (state) => {
+        state.folders.status = FetchingStatusConstant.FETCHING;
+      })
+      .addCase(unlockVault.rejected, (state) => {
+        state.folders.status = FetchingStatusConstant.ERROR;
+      })
+      .addCase(unlockVault.fulfilled, (state, action) => {
+        const { payload } = action;
+
+        state.folders.status = FetchingStatusConstant.SUCCESS;
+
+        state.folders.value = payload.reduce((acc, curr) => ({
+          ...acc,
+          [curr.id]: {
+            currentPassword: head(curr.passwordEntries)?.id,
+            folder: curr,
+          },
+        }), {});
       });
   },
 });

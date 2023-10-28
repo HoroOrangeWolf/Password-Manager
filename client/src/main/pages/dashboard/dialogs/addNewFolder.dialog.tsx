@@ -9,6 +9,7 @@ import SimpleControlledInputContainer from '../../../shared/fields/simpleControl
 import { MainStoreStateType } from '../../../store/types/mainStore.type';
 import { selectDialogMode, selectIsDialogOpen } from '../../../store/slices/dialogs/selectors/dialog.selector';
 import DialogModesConstant from '../../../store/slices/dialogs/constant/dialogModes.constant';
+import { closeDialog } from '../../../store/slices/dialogs/dialog.slice';
 
 type PropsType = {
 } & ConnectorProps;
@@ -59,7 +60,7 @@ const mapStateToProps = (state: MainStoreStateType) => ({
 });
 
 const mapDispatchToProps = {
-
+  closeDialog,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

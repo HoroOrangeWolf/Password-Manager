@@ -1,6 +1,8 @@
 package com.password.manager.core.security;
 
+import jakarta.servlet.http.Cookie;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +24,14 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Collections;
+import java.util.List;
+
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -30,23 +39,43 @@ public class GlobalSecurityConfig {
 
     @Bean
     @SneakyThrows
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, RememberMeServices rememberMeServices, RememberMeAuthenticationFilter authenticationFilter) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, CorsConfigurationSource corsConfigurationSource, RememberMeServices rememberMeServices, RememberMeAuthenticationFilter authenticationFilter) {
         return httpSecurity
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> {
+                    cors.configurationSource(corsConfigurationSource);
+                })
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
-                .rememberMe(remember -> remember.rememberMeServices(rememberMeServices)
-                        .tokenValiditySeconds(60 * 60 * 24 * 7)
-                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .rememberMe(remember -> remember.rememberMeServices(rememberMeServices))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(login -> login.loginProcessingUrl("/login").successHandler((request, response, authentication) -> {
-                }))
+                        })
+                        .failureHandler(((request, response, exception) -> {
+                            response.setStatus(400);
+                        })))
                 .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.logoutUrl("/logout")
+                        .logoutSuccessHandler(((request, response, authentication) -> {
+                        }))
                         .clearAuthentication(true)
                         .deleteCookies("rememberMe")
                 )
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+
+        corsConfiguration.applyPermitDefaultValues();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(List.of("POST", "GET", "PATCH", "DELETE", "PUT", "OPTIONS", "HEAD"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return source;
     }
 
     @Bean
@@ -63,6 +92,13 @@ public class GlobalSecurityConfig {
         tokenBasedRememberMeServices.setMatchingAlgorithm(TokenBasedRememberMeServices.RememberMeTokenAlgorithm.MD5);
 
         tokenBasedRememberMeServices.setCookieName("rememberMe");
+
+
+        tokenBasedRememberMeServices.setAlwaysRemember(true);
+
+        tokenBasedRememberMeServices.setUseSecureCookie(true);
+
+        tokenBasedRememberMeServices.setTokenValiditySeconds(60 * 60 * 24 * 7);
 
         return tokenBasedRememberMeServices;
     }

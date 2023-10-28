@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Typography } from 'antd';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
 import SimpleControlledInputContainer from '../../shared/fields/simpleControlledInput.container';
+import { unlockVault } from '../../store/slices/passwords/thunks/password.thunks';
+import UserRepository from '../../api/user/repository/user.repository';
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -34,7 +37,13 @@ const defaultValues: FormData = {
 
 const { Title } = Typography;
 
-const UnlockVaultPageContainer = () => {
+type PropsType = {
+
+} & ConnectorProps
+
+const UnlockVaultPageContainer = (props: PropsType) => {
+  const [isLogging, setIsLogging] = useState(false);
+
   const form = useForm({
     defaultValues,
     // @ts-ignore
@@ -43,10 +52,21 @@ const UnlockVaultPageContainer = () => {
 
   const navigator = useNavigate();
 
+  const handleSubmit = async (req: FormData) => {
+    setIsLogging(true);
+    try {
+      await props.unlockVault(req.masterPassword as string);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLogging(false);
+    }
+  };
+
   return (
     <StyledWrapper>
       <Title level={1}>Unlock vault</Title>
-      <StyledForm>
+      <StyledForm onSubmit={form.handleSubmit(handleSubmit)}>
         <SimpleControlledInputContainer
           name="masterPassword"
           label="Master Password"
@@ -56,6 +76,7 @@ const UnlockVaultPageContainer = () => {
         <Button
           type="primary"
           size="large"
+          disabled={isLogging}
           onClick={(e) => {
             // @ts-ignore
             e.currentTarget?.form?.requestSubmit();
@@ -65,7 +86,11 @@ const UnlockVaultPageContainer = () => {
         </Button>
         <Button
           size="large"
-          onClick={() => navigator('/')}
+          disabled={isLogging}
+          onClick={async () => {
+            await UserRepository.logout();
+            navigator('/');
+          }}
         >
           Logout
         </Button>
@@ -74,4 +99,14 @@ const UnlockVaultPageContainer = () => {
   );
 };
 
-export default UnlockVaultPageContainer;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = {
+  unlockVault,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ConnectorProps = ConnectedProps<typeof connector>;
+
+export default connector(UnlockVaultPageContainer);

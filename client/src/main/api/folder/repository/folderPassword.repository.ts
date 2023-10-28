@@ -16,7 +16,7 @@ const addPassword = async (folderId: string, addPasswordRequest: AddFolderReques
 };
 
 const getFoldersWithDecodedPasswords = async (masterKey: string): Promise<FolderPasswordType[]> => {
-  const response = await axios.get<FolderPasswordType[]>(`${BackendConstant.BACKEND_URL}/user/folder`, {
+  const response = await axios.get<FolderPasswordType[]>(`${BackendConstant.BACKEND_URL}/user/unlock/passwords`, {
     params: {
       masterKey,
     },

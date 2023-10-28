@@ -52,6 +52,9 @@
     "no-use-before-define":  [
       "off"
     ],
+    "import/extensions": [
+      "off"
+    ],
     "@typescript-eslint/ban-types": [
       "off"
     ],

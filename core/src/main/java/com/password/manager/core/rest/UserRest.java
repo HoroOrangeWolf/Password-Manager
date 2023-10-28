@@ -8,14 +8,18 @@ import com.password.manager.core.rest.models.MessageModel;
 import com.password.manager.core.rest.models.PasswordRequest;
 import com.password.manager.core.security.AuthPrincipal;
 import com.password.manager.core.service.UserFacade;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -28,11 +32,18 @@ public class UserRest {
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<AccountDTO> getCurrentUser(@AuthenticationPrincipal AuthPrincipal authPrincipal) {
+    public ResponseEntity<AccountDTO> getCurrentUser(@AuthenticationPrincipal AuthPrincipal authPrincipal, HttpServletRequest httpRequest) {
+        String rememberMe = Arrays.stream(httpRequest.getCookies())
+                .filter(f -> f.getName().equals("rememberMe"))
+                .findAny()
+                .map(Cookie::getValue)
+                .orElse("");
+
         return ResponseEntity.ok(
                 new AccountDTO(
                         authPrincipal.getUsername(),
-                        authPrincipal.getAccountUserName()
+                        authPrincipal.getAccountUserName(),
+                        rememberMe
                 )
         );
     }

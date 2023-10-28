@@ -29,7 +29,7 @@ type PropsType = {
 
 const FoldersListContainer = (props: PropsType) => {
   const foldersElements = useMemo(() => (
-    Object.entries(props.folders)
+    Object.entries(props.folders ?? {})
       .map(([key, value]) => (
         <FolderListEntryContainer folder={value.folder} key={key} />
       ))

@@ -20,9 +20,9 @@ type PropsType = {
 const PasswordListContainer = (props: PropsType) => {
   const passwordElements = useMemo(() => (
     props.passwords
-      .map((password) => (
+      ?.map((password) => (
         <PasswordEntryContainer key={password.id} password={password} />
-      ))
+      )) ?? []
   ), [props.passwords]);
 
   return (
