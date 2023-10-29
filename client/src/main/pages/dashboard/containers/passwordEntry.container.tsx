@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import React from 'react';
 import { PasswordType } from '../../../api/folder/types/password.type';
 import { MainStoreStateType } from '../../../store/types/mainStore.type';
-import { selectCurrentSelectedPassword } from '../../../store/slices/passwords/selectors/password.selectors';
+import { selectCurrentSelectedPasswordId } from '../../../store/slices/passwords/selectors/password.selectors';
 
 type PropsType = {
     password: PasswordType
@@ -16,7 +16,7 @@ const StyledContainer = styled.div<{isSelected: boolean}>`
   gap: 5px;
   padding: 5px;
   background-color: ${({ isSelected }) => (isSelected ? '#E5E4E2' : 'none')};
-
+  
   &:hover {
     background-color: #E5E4E2;
   }
@@ -36,7 +36,7 @@ const PasswordEntryContainer = ({ password, selectedCurrentPassword }: PropsType
 };
 
 const mapStateToProps = (state: MainStoreStateType) => ({
-  selectedCurrentPassword: selectCurrentSelectedPassword(state),
+  selectedCurrentPassword: selectCurrentSelectedPasswordId(state),
 });
 
 const connector = connect(mapStateToProps);

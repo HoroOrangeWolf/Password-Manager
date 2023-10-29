@@ -10,6 +10,7 @@ import { openCreateFolderDialog } from '../../../store/slices/dialogs/dialog.sli
 
 const StyledContainer = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
 `;
 
@@ -25,7 +26,7 @@ const HeaderWrapper = styled.div`
 
 type PropsType = {
 
-} & ConnectorType
+} & ConnectorType;
 
 const FoldersListContainer = (props: PropsType) => {
   const foldersElements = useMemo(() => (

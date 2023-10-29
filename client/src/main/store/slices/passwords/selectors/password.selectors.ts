@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
+import { isNil } from 'lodash';
 import { MainStoreStateType } from '../../../types/mainStore.type';
 import FetchingStatusConstant from '../../../../shared/constant/fetchingStatus.constant';
 
@@ -18,7 +19,7 @@ export const selectCurrentFolder = ({ password }: MainStoreStateType) => (
   password.currentFolder
 );
 
-export const selectCurrentSelectedPassword = createSelector(
+export const selectCurrentSelectedPasswordId = createSelector(
   [
     selectFolders,
     selectCurrentFolder,
@@ -26,6 +27,22 @@ export const selectCurrentSelectedPassword = createSelector(
   (folders, currentFolder) => (
     folders[currentFolder]?.currentPassword
   ),
+);
+
+export const selectCurrentSelectedPassword = createSelector(
+  [
+    selectFolders,
+    selectCurrentFolder,
+  ],
+  (folders, currentFolder) => {
+    const currentPasswordid = folders[currentFolder]?.currentPassword;
+
+    if (isNil(currentPasswordid)) {
+      return undefined;
+    }
+
+    return folders[currentFolder].folder.passwordEntries.find(({ id }) => id === currentPasswordid);
+  },
 );
 
 export const selectCurrentPasswords = createSelector(

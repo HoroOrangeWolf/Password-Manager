@@ -8,10 +8,8 @@ export type PasswordType = {
     createdAt: number;
 }
 
+export type PasswordRequestType = Omit<PasswordType, 'createdAt' | 'lastModified' | 'id'>;
+
 export type AddPasswordRequest = {
-    name: string;
-    login: string;
-    password: string;
-    pageUrl: string;
     masterKey: string;
-}
+} & PasswordRequestType
