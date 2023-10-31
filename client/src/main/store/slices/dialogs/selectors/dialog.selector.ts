@@ -7,3 +7,11 @@ export const selectIsDialogOpen = ({ dialog }: MainStoreStateType) => (
 export const selectDialogMode = ({ dialog }: MainStoreStateType) => (
   dialog.mode
 );
+
+export const selectPasswordToRemove = ({ dialog }: MainStoreStateType) => (
+  dialog.passwordToRemove
+);
+
+export const selectFolderToRemove = ({ dialog }: MainStoreStateType) => (
+  dialog.folderToRemove
+);

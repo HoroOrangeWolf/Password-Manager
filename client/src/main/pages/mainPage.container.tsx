@@ -20,8 +20,8 @@ const StyledContainer = styled.div`
 `;
 
 const StyledOutletDiv = styled.div`
-  width: 100%;
-  height: 90vh;
+  width: 100vw;
+  height: 100vh;
   justify-content: center;
   align-items: center;
   display: flex;

@@ -46,7 +46,6 @@ public class GlobalSecurityConfig {
                     cors.configurationSource(corsConfigurationSource);
                 })
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .rememberMe(remember -> remember.rememberMeServices(rememberMeServices))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(login -> login.loginProcessingUrl("/login").successHandler((request, response, authentication) -> {
@@ -58,7 +57,7 @@ public class GlobalSecurityConfig {
                         .logoutSuccessHandler(((request, response, authentication) -> {
                         }))
                         .clearAuthentication(true)
-                        .deleteCookies("rememberMe")
+                        .deleteCookies("rememberMe", "JSESSIONID")
                 )
                 .build();
     }
@@ -93,10 +92,7 @@ public class GlobalSecurityConfig {
 
         tokenBasedRememberMeServices.setCookieName("rememberMe");
 
-
         tokenBasedRememberMeServices.setAlwaysRemember(true);
-
-        tokenBasedRememberMeServices.setUseSecureCookie(true);
 
         tokenBasedRememberMeServices.setTokenValiditySeconds(60 * 60 * 24 * 7);
 

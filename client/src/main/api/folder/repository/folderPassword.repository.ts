@@ -9,10 +9,24 @@ const addFolder = async (folder: AddFolderRequest): Promise<FolderPasswordType> 
   return response.data;
 };
 
+const removeFolder = async (folderId: string) => {
+  await axios.delete(`${BackendConstant.BACKEND_URL}/user/folder/${folderId}`);
+};
+
 const addPassword = async (folderId: string, addPasswordRequest: AddFolderRequest) : Promise<PasswordType> => {
   const response = await axios.post<PasswordType>(`${BackendConstant.BACKEND_URL}/user/folder/${folderId}/password`, addPasswordRequest);
 
   return response.data;
+};
+
+const updatePassword = async (folderId: string, passwordId: string, request: AddFolderRequest): Promise<PasswordType> => {
+  const response = await axios.post<PasswordType>(`${BackendConstant.BACKEND_URL}/user/folder/${folderId}/password/${passwordId}`, request);
+
+  return response.data;
+};
+
+const removePassword = async (passwordId: string) => {
+  await axios.delete(`${BackendConstant.BACKEND_URL}/user/password/${passwordId}`);
 };
 
 const getFoldersWithDecodedPasswords = async (masterKey: string): Promise<FolderPasswordType[]> => {
@@ -28,6 +42,9 @@ const getFoldersWithDecodedPasswords = async (masterKey: string): Promise<Folder
 const FolderPasswordRepository = {
   addFolder,
   addPassword,
+  removeFolder,
+  removePassword,
+  updatePassword,
   getFoldersWithDecodedPasswords,
 };
 

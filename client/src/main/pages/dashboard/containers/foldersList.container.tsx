@@ -16,6 +16,7 @@ const StyledContainer = styled.div`
 
 const StyledWrapper = styled.div`
   flex: 2;
+  padding: 5px;
 `;
 
 const HeaderWrapper = styled.div`
@@ -42,7 +43,7 @@ const FoldersListContainer = (props: PropsType) => {
         <Collapse.Panel
           header={(
             <HeaderWrapper onClick={() => props.openCreateFolderDialog()}>
-              Folder
+              Folders
               <PlusOutlined />
             </HeaderWrapper>
 )}

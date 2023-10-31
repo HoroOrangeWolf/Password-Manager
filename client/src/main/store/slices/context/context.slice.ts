@@ -5,11 +5,13 @@ import FetchingStatusConstant from '../../../shared/constant/fetchingStatus.cons
 import { fetchCurrentUser } from './thunks/context.thunks';
 
 type InitialType = {
-    currentUser: FetchableElementType<UserType>,
+  currentUser: FetchableElementType<UserType>,
+  masterPassword: string;
   isBlockedNavigation: boolean;
 }
 
 const initialState: InitialType = {
+  masterPassword: '',
   isBlockedNavigation: false,
   currentUser: {
     status: FetchingStatusConstant.PENDING,
@@ -22,6 +24,12 @@ const contextSlice = createSlice({
   reducers: {
     setNavigationBlock: (state, action: PayloadAction<boolean>) => {
       state.isBlockedNavigation = action.payload;
+    },
+    setMasterPassword: (state, action: PayloadAction<string>) => {
+      state.masterPassword = action.payload;
+    },
+    clearMasterPassword: (state) => {
+      state.masterPassword = '';
     },
   },
   extraReducers: (builder) => {
@@ -44,6 +52,6 @@ const contextSlice = createSlice({
   },
 });
 
-export const { setNavigationBlock } = contextSlice.actions;
+export const { setNavigationBlock, setMasterPassword, clearMasterPassword } = contextSlice.actions;
 
 export default contextSlice;

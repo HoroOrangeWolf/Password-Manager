@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Modal } from 'antd';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,6 +10,7 @@ import { MainStoreStateType } from '../../../store/types/mainStore.type';
 import { selectDialogMode, selectIsDialogOpen } from '../../../store/slices/dialogs/selectors/dialog.selector';
 import DialogModesConstant from '../../../store/slices/dialogs/constant/dialogModes.constant';
 import { closeDialog } from '../../../store/slices/dialogs/dialog.slice';
+import { addFolder } from '../../../store/slices/passwords/thunks/password.thunks';
 
 type PropsType = {
 } & ConnectorProps;
@@ -32,6 +33,8 @@ const defaultValues: FormData = {
 };
 
 const AddNewFolderDialog = (props: PropsType) => {
+  const formRef = useRef<HTMLFormElement>(null);
+
   const form = useForm<FormData>({
     defaultValues,
     // @ts-ignore
@@ -40,9 +43,23 @@ const AddNewFolderDialog = (props: PropsType) => {
 
   const isDialogOpen = props.isOpen && props.dialogMode === DialogModesConstant.CREATE_FOLDER;
 
+  const handleSubmit = async (formData: FormData) => {
+    await props.addFolder({ name: formData.name as string });
+    form.reset();
+    props.closeDialog();
+  };
+
   return (
-    <Modal title="Add Folder" open={isDialogOpen} okText="Submit">
-      <StyledForm>
+    <Modal
+      title="Add Folder"
+      open={isDialogOpen}
+      okText="Submit"
+      onCancel={() => props.closeDialog()}
+      onOk={() => {
+        formRef.current.requestSubmit();
+      }}
+    >
+      <StyledForm ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
         <SimpleControlledInputContainer
           name="name"
           label="Folder name"
@@ -61,6 +78,7 @@ const mapStateToProps = (state: MainStoreStateType) => ({
 
 const mapDispatchToProps = {
   closeDialog,
+  addFolder,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

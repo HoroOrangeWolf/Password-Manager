@@ -104,6 +104,32 @@ public class UserFacade {
                 .build();
     }
 
+    @Transactional
+    public PasswordDTO updatePassword(PasswordRequest passwordRequest, String passwordId, String folderId) {
+        FolderEntity folderEntity = folderRepository.findById(UUID.fromString(folderId))
+                .orElseThrow(() -> new IllegalStateException("Folder not found!"));
+
+        PasswordEntity passwordEntity = passwordRepository.findById(UUID.fromString(passwordId))
+                .orElseThrow(() -> new IllegalStateException("Password  not found!"));
+
+        UUID id = folderEntity.getAccountEntity().getId();
+
+        String encryptedPassword = aesEncryptionService.encrypt(id, passwordRequest.password(), passwordRequest.masterKey());
+        String encryptedLogin = aesEncryptionService.encrypt(id, passwordRequest.login(), passwordRequest.masterKey());
+
+        passwordEntity.setPassword(encryptedPassword);
+        passwordEntity.setFolderEntity(folderEntity);
+        passwordEntity.setLogin(encryptedLogin);
+        passwordEntity.setName(passwordRequest.name());
+        passwordEntity.setPageUrl(passwordRequest.pageUrl());
+
+        return passwordMapper.mapEntityToDto(passwordEntity)
+                .toBuilder()
+                .login(passwordRequest.login())
+                .password(passwordRequest.password())
+                .build();
+    }
+
     @Transactional(readOnly = true)
     public List<FolderDTO> getUncodedFolderWithPasswords(AccountEntity accountEntity, String masterKey) {
         return folderRepository.findAllByAccountId(accountEntity.getId())

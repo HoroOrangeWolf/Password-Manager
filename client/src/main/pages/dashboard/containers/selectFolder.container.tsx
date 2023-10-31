@@ -1,7 +1,7 @@
 import { connect, ConnectedProps } from 'react-redux';
 import React, { useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
-import { Input, Select, Typography } from 'antd';
+import { Select, Typography } from 'antd';
 import styled from 'styled-components';
 import { MainStoreStateType } from '../../../store/types/mainStore.type';
 import { selectFolders } from '../../../store/slices/passwords/selectors/password.selectors';
@@ -18,8 +18,6 @@ const StyledContainer = styled.div`
 const { Text } = Typography;
 
 const SelectFolderContainer = (props: PropsType) => {
-  console.log('D');
-
   const options = useMemo(() => (
     Object.values(props.currentFolders)
       .map(({ folder }) => ({
@@ -33,11 +31,14 @@ const SelectFolderContainer = (props: PropsType) => {
       control={props.control}
       render={({ field, fieldState }) => (
         <StyledContainer>
+          <Text type="secondary">Select folder</Text>
           <Select
             {...field}
             placeholder="Parent Folder"
             size="large"
-            addonBefore="Parent Folder"
+            options={options}
+            value={field.value}
+            onChange={(value: string) => field.onChange(value)}
             status={fieldState.invalid && 'error'}
           />
           {fieldState.invalid && (

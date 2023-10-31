@@ -14,6 +14,7 @@ public class PasswordMapper {
                 entity.getLogin(),
                 entity.getPassword(),
                 entity.getPageUrl(),
+                entity.getFolderEntity().getId().toString(),
                 entity.getModifiedDate(),
                 entity.getCreatedDate()
         );

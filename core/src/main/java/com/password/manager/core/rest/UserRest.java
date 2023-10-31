@@ -17,6 +17,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -88,5 +89,17 @@ public class UserRest {
     public PasswordDTO addPassword(@RequestBody @Valid PasswordRequest request, @PathVariable("folderId") String folderId, @AuthenticationPrincipal AuthPrincipal authPrincipal) {
         log.info("User {} trying to add password", authPrincipal.getAccountUserName());
         return userFacade.addPassword(request, folderId);
+    }
+
+    @PostMapping("/folder/{folderId}/password/{passwordId}")
+    @PreAuthorize("isAuthenticated() and @security.isFolderOwner(principal, #folderId) and @security.isValidMasterPassword(principal, #request.masterKey())")
+    public PasswordDTO updatePassword(
+            @RequestBody @Valid PasswordRequest request,
+            @PathVariable("folderId") String folderId,
+            @PathVariable("passwordId") String passwordId,
+            @AuthenticationPrincipal AuthPrincipal authPrincipal
+    ) {
+        log.info("User {} trying to update password", authPrincipal.getAccountUserName());
+        return userFacade.updatePassword(request, passwordId, folderId);
     }
 }

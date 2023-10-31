@@ -82,7 +82,7 @@ const UnlockVaultPageContainer = (props: PropsType) => {
             e.currentTarget?.form?.requestSubmit();
           }}
         >
-          Login
+          Unlock
         </Button>
         <Button
           size="large"

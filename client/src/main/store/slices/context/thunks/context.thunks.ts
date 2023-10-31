@@ -1,7 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import { isEmpty, isNil } from 'lodash';
 import { UserType } from '../../../../api/user/types/user.type';
 import UserRepository from '../../../../api/user/repository/user.repository';
 import { RegisterRequestType } from '../../../../api/user/types/registerRequest.type';

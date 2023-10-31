@@ -15,6 +15,7 @@ const { Text } = Typography;
 
 const StyledContainer = styled.div`
   display: flex;
+  gap: 5px;
   flex-direction: column;
 `;
 
@@ -25,12 +26,12 @@ const SimpleControlledInputContainer = ({
     control={control}
     render={({ field, fieldState }) => (
       <StyledContainer>
+        <Text type="secondary">{label}</Text>
         <Input
           {...field}
           placeholder={placeholder}
           size="large"
           type={type}
-          addonBefore={label}
           status={fieldState.invalid && 'error'}
         />
         {fieldState.invalid && (

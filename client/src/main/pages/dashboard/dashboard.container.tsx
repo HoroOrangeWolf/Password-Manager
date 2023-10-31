@@ -1,17 +1,22 @@
 import styled from 'styled-components';
-import { Outlet } from 'react-router-dom';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Spin } from 'antd';
 import FoldersListContainer from './containers/foldersList.container';
 import PasswordListContainer from './containers/passwordList.container';
 import { MainStoreStateType } from '../../store/types/mainStore.type';
-import { selectIsFetchingFolders } from '../../store/slices/passwords/selectors/password.selectors';
+import {
+  selectCurrentSelectedPassword,
+  selectIsFetchingFolders,
+} from '../../store/slices/passwords/selectors/password.selectors';
 import AddNewFolderDialog from './dialogs/addNewFolder.dialog';
+import PasswordPanelContainer from './containers/passwordPanel.container';
+import RemoveFolderConfirmationDialog from './dialogs/removeFolderConfirmation.dialog';
+import RemovePasswordConfirmationDialog from './dialogs/removePasswordConfirmation.dialog';
 
 const StyledContainer = styled.div`
-  width: 100vw;
-  height: 80vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: row;
 `;
@@ -32,11 +37,13 @@ const DashboardContainer = (props: PropsType) => {
   return (
     <>
       <AddNewFolderDialog />
+      <RemoveFolderConfirmationDialog />
+      <RemovePasswordConfirmationDialog />
       <StyledContainer>
         <FoldersListContainer />
         <PasswordListContainer />
         <StyledRightPanel>
-          <Outlet />
+          <PasswordPanelContainer currentPassword={props.currentPassword} key={props.currentPassword?.id ?? ''} />
         </StyledRightPanel>
       </StyledContainer>
     </>
@@ -45,6 +52,7 @@ const DashboardContainer = (props: PropsType) => {
 
 const mapStateToProps = (state: MainStoreStateType) => ({
   isFetchingFolders: selectIsFetchingFolders(state),
+  currentPassword: selectCurrentSelectedPassword(state),
 });
 
 const connector = connect(mapStateToProps);

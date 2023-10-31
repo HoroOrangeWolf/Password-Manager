@@ -13,7 +13,6 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
-import { isEmpty, isNil } from 'lodash';
 import configureMainStore from './main/store/main.store';
 import LoginMainContainer from './main/pages/login/loginMain.container';
 import RegisterMainContainer from './main/pages/register/registerMain.container';
