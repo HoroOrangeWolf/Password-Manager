@@ -42,9 +42,14 @@ const FoldersListContainer = (props: PropsType) => {
       <Collapse defaultActiveKey={['1']}>
         <Collapse.Panel
           header={(
-            <HeaderWrapper onClick={() => props.openCreateFolderDialog()}>
+            <HeaderWrapper>
               Folders
-              <PlusOutlined />
+              <PlusOutlined onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                props.openCreateFolderDialog();
+              }}
+              />
             </HeaderWrapper>
 )}
           key="1"

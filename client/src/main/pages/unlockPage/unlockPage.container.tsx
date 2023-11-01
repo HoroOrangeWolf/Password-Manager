@@ -70,6 +70,7 @@ const UnlockVaultPageContainer = (props: PropsType) => {
         <SimpleControlledInputContainer
           name="masterPassword"
           label="Master Password"
+          type="password"
           placeholder="Master Password"
           control={form.control}
         />

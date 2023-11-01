@@ -29,7 +29,6 @@ const createWindow = (): void => {
     height: 600,
     width: 800,
     webPreferences: {
-      sandbox: false,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
@@ -76,9 +75,6 @@ const createWindow = (): void => {
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.maximize();
