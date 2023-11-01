@@ -7,6 +7,11 @@ import { router } from '../../../../../app';
 import UserService from '../../../../api/user/user.service';
 import AppStorageService from '../../../../storage/appStorage.service';
 import AxiosSetupCookieService from '../../../../storage/axiosSetupCookie.service';
+import { clearAllContext, setNavigationBlock } from '../context.slice';
+import { clearPasswordStore } from '../../passwords/passwords.slice';
+import { MainStoreStateType } from '../../../types/mainStore.type';
+import { selectMasterKey } from '../selectors/context.selector';
+import { closeDialog } from '../../dialogs/dialog.slice';
 
 export const fetchCurrentUser = createAsyncThunk<UserType>(
   'context/currentUser',
@@ -22,6 +27,7 @@ export const fetchCurrentUser = createAsyncThunk<UserType>(
       return response;
     } catch (e) {
       console.error('Couldn\'t fetch current user', e);
+      await router.navigate('/');
       throw e;
     }
   },
@@ -44,6 +50,50 @@ export const loginUser = createAsyncThunk<any, LoginType>(
       console.error('Couldn\'t login  user', e);
       toast.error('Couldn\'t login  user');
       throw e;
+    }
+  },
+);
+
+export const logoutUser = createAsyncThunk('context/logout', async (_a, thunkAPI) => {
+  try {
+    thunkAPI.dispatch(setNavigationBlock(true));
+    await UserService.logoutUser();
+    thunkAPI.dispatch(clearAllContext());
+    thunkAPI.dispatch(clearPasswordStore());
+    await router.navigate('/');
+
+    thunkAPI.dispatch(closeDialog());
+  } catch (e) {
+    console.error(e);
+    toast.error('Couldn\'t logout');
+  } finally {
+    thunkAPI.dispatch(setNavigationBlock(false));
+  }
+});
+
+export const changePassword = createAsyncThunk<void, string, {
+    state: MainStoreStateType
+}>(
+  'context/changePassword',
+  async (newPassword, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setNavigationBlock(true));
+
+      const currentPassword = selectMasterKey(thunkAPI.getState());
+
+      await UserRepository.changePassword({ newPassword, currentPassword });
+      await UserService.logoutUser();
+
+      await router.navigate('/');
+
+      thunkAPI.dispatch(clearPasswordStore());
+      thunkAPI.dispatch(clearAllContext());
+      toast.success('Changed password successfully');
+    } catch (e) {
+      console.error('Clouldn\'t change password', e);
+      toast.error('Couldn\'t change password');
+    } finally {
+      thunkAPI.dispatch(setNavigationBlock(true));
     }
   },
 );

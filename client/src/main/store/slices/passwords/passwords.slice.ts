@@ -43,6 +43,10 @@ const passwordsSlice = createSlice({
 
       state.folders.value[state.currentFolder].currentPassword = action.payload;
     },
+    clearPasswordStore: (state) => {
+      state.folders.value = {};
+      state.folders.status = FetchingStatusConstant.PENDING;
+    },
   },
   initialState,
   extraReducers: (builder) => {
@@ -154,6 +158,7 @@ export const {
   setCurrentFolder,
   setCurrentPassword,
   clearCurrentSelectedPassword,
+  clearPasswordStore,
 } = passwordsSlice.actions;
 
 export default passwordsSlice;

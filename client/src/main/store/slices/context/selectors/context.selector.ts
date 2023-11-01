@@ -2,7 +2,7 @@ import { MainStoreStateType } from '../../../types/mainStore.type';
 import FetchingStatusConstant from '../../../../shared/constant/fetchingStatus.constant';
 
 export const selectCurrentUserFetching = ({ context }: MainStoreStateType) => (
-  context.currentUser.status === FetchingStatusConstant.FETCHING || context.currentUser.status === FetchingStatusConstant.PENDING
+  context.currentUser.status === FetchingStatusConstant.FETCHING
 );
 
 export const selectMasterKey = ({ context }: MainStoreStateType) => (

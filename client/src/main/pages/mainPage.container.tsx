@@ -10,7 +10,10 @@ import { isEmpty } from 'lodash';
 import { connect, ConnectedProps } from 'react-redux';
 import { MainStoreStateType } from '../store/types/mainStore.type';
 import { selectCurrentUserFetching } from '../store/slices/context/selectors/context.selector';
-import { fetchCurrentUser } from '../store/slices/context/thunks/context.thunks';
+import { fetchCurrentUser, logoutUser } from '../store/slices/context/thunks/context.thunks';
+import { clearPasswordStore } from '../store/slices/passwords/passwords.slice';
+import { clearAllContext, clearMasterPassword } from '../store/slices/context/context.slice';
+import { openChangePasswordDialog } from '../store/slices/dialogs/dialog.slice';
 
 const StyledContainer = styled.div`
   display: flex;
@@ -37,6 +40,21 @@ const MainPageContainer = (props: PropsType) => {
 
   useEffect(() => {
     props.fetchCurrentUser();
+
+    window.electronAPI.onLogout(() => {
+      navigation('');
+      props.logoutUser();
+    });
+
+    window.electronAPI.onLock(() => {
+      navigation('unlock');
+      props.clearPasswordStore();
+      props.clearMasterPassword();
+    });
+
+    window.electronAPI.changePassword(() => {
+      props.openChangePasswordDialog();
+    });
   }, []);
 
   const goToLoginPage = () => {
@@ -91,6 +109,11 @@ const mapStateToProps = (state: MainStoreStateType) => ({
 
 const mapDispatchToProps = {
   fetchCurrentUser,
+  clearAllContext,
+  clearMasterPassword,
+  clearPasswordStore,
+  logoutUser,
+  openChangePasswordDialog,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

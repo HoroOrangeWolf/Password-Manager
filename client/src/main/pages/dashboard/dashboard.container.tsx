@@ -13,6 +13,7 @@ import AddNewFolderDialog from './dialogs/addNewFolder.dialog';
 import PasswordPanelContainer from './containers/passwordPanel.container';
 import RemoveFolderConfirmationDialog from './dialogs/removeFolderConfirmation.dialog';
 import RemovePasswordConfirmationDialog from './dialogs/removePasswordConfirmation.dialog';
+import ChangePasswordDialog from './dialogs/changePassword.dialog';
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -39,6 +40,7 @@ const DashboardContainer = (props: PropsType) => {
       <AddNewFolderDialog />
       <RemoveFolderConfirmationDialog />
       <RemovePasswordConfirmationDialog />
+      <ChangePasswordDialog />
       <StyledContainer>
         <FoldersListContainer />
         <PasswordListContainer />

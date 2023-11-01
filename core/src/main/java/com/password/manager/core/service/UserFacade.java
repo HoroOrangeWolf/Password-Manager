@@ -7,6 +7,7 @@ import com.password.manager.core.db.mappers.FolderMapper;
 import com.password.manager.core.db.mappers.PasswordMapper;
 import com.password.manager.core.db.models.FolderDTO;
 import com.password.manager.core.db.models.PasswordDTO;
+import com.password.manager.core.rest.models.ChangePasswordRequest;
 import com.password.manager.core.rest.models.FolderRequest;
 import com.password.manager.core.rest.models.PasswordRequest;
 import com.password.manager.core.rest.models.RegisterRequest;
@@ -65,6 +66,31 @@ public class UserFacade {
         FolderEntity saved = folderRepository.save(folderEntity);
 
         return folderMapper.mapEntityToDto(saved);
+    }
+
+    @Transactional
+    public void changePassword(AccountEntity accountEntity, ChangePasswordRequest request) {
+        String currentPassword = request.currentPassword();
+        String newPassword = request.newPassword();
+
+        AccountEntity account = accountRepository.findById(accountEntity.getId())
+                .orElseThrow(() -> new IllegalStateException("No user"));
+
+        UUID accountId = account.getId();
+
+        account.setPassword(passwordEncoder.encode(newPassword));
+
+        passwordRepository.findAllUsersPasswords(account.getId())
+                .forEach(passwordEntity -> {
+                    String decryptedPassword = aesEncryptionService.decrypt(accountId, passwordEntity.getPassword(), currentPassword);
+                    String decryptedLogin = aesEncryptionService.decrypt(accountId, passwordEntity.getLogin(), currentPassword);
+
+                    String encryptedPassword = aesEncryptionService.encrypt(accountId, decryptedPassword, newPassword);
+                    String encryptedLogin = aesEncryptionService.encrypt(accountId, decryptedLogin, newPassword);
+
+                    passwordEntity.setPassword(encryptedPassword);
+                    passwordEntity.setLogin(encryptedLogin);
+                });
     }
 
     @Transactional

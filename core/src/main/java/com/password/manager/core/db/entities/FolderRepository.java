@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface FolderRepository extends JpaRepository<FolderEntity, UUID> {
-
     @Query("SELECT c FROM FolderEntity c WHERE c.accountEntity.id = ?1")
     List<FolderEntity> findAllByAccountId(UUID id);
 }

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { UserType } from '../types/user.type';
 import BackendConstant from '../../constant/backend.constant';
 import { RegisterRequestType } from '../types/registerRequest.type';
+import { ChangePasswordRequestType } from '../types/changePasswordRequest.type';
 
 const fetchCurrentUser = async (): Promise<UserType> => {
   const response = await axios.get<UserType>(`${BackendConstant.BACKEND_URL}/user/me`);
@@ -15,7 +16,11 @@ const loginUser = async (username: string, password: string) => {
   form.append('username', username);
   form.append('password', password);
 
-  return await axios.post(`${BackendConstant.BACKEND_URL}/login`, form);
+  return axios.post(`${BackendConstant.BACKEND_URL}/login`, form);
+};
+
+const changePassword = async (request: ChangePasswordRequestType) => {
+  await axios.post(`${BackendConstant.BACKEND_URL}/user/changePassword`, request);
 };
 
 const registerUser = async (req: RegisterRequestType) => {
@@ -30,6 +35,7 @@ const UserRepository = {
   logout,
   loginUser,
   registerUser,
+  changePassword,
   fetchCurrentUser,
 };
 

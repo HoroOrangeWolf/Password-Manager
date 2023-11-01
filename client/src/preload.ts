@@ -4,5 +4,8 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   getToken: () => ipcRenderer.invoke('getToken'),
+  onLogout: (cb: ()=>any) => ipcRenderer.on('logout', () => cb()),
+  onLock: (cb: ()=>any) => ipcRenderer.on('lock', () => cb()),
   setToken: (token: string) => ipcRenderer.send('setToken', token),
+  changePassword: (cb: ()=>any) => ipcRenderer.on('changePassword', () => cb()),
 });

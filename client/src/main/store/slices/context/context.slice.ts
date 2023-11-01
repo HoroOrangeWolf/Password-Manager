@@ -31,6 +31,11 @@ const contextSlice = createSlice({
     clearMasterPassword: (state) => {
       state.masterPassword = '';
     },
+    clearAllContext: (state) => {
+      state.masterPassword = '';
+      state.currentUser.value = undefined;
+      state.currentUser.status = FetchingStatusConstant.PENDING;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -52,6 +57,11 @@ const contextSlice = createSlice({
   },
 });
 
-export const { setNavigationBlock, setMasterPassword, clearMasterPassword } = contextSlice.actions;
+export const {
+  setNavigationBlock,
+  clearAllContext,
+  setMasterPassword,
+  clearMasterPassword,
+} = contextSlice.actions;
 
 export default contextSlice;

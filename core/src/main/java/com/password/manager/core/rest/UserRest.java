@@ -3,6 +3,7 @@ package com.password.manager.core.rest;
 import com.password.manager.core.db.models.AccountDTO;
 import com.password.manager.core.db.models.FolderDTO;
 import com.password.manager.core.db.models.PasswordDTO;
+import com.password.manager.core.rest.models.ChangePasswordRequest;
 import com.password.manager.core.rest.models.FolderRequest;
 import com.password.manager.core.rest.models.MessageModel;
 import com.password.manager.core.rest.models.PasswordRequest;
@@ -13,11 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -47,6 +46,18 @@ public class UserRest {
                         rememberMe
                 )
         );
+    }
+
+    @PostMapping("/changePassword")
+    @PreAuthorize("isAuthenticated() and @security.isValidMasterPassword(principal, #request.currentPassword())")
+    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest request, @AuthenticationPrincipal AuthPrincipal principal) {
+        log.info("Trying to change password");
+
+        userFacade.changePassword(principal.getAccountEntity(), request);
+
+        log.info("Changed password successfully");
+
+        return ResponseEntity.ok("Changed password");
     }
 
     @PostMapping("/folder")

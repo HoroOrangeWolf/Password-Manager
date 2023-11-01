@@ -30,6 +30,10 @@ const dialogSlice = createSlice({
       state.isOpen = true;
       state.mode = DialogModesConstant.CREATE_FOLDER;
     },
+    openChangePasswordDialog: (state) => {
+      state.isOpen = true;
+      state.mode = DialogModesConstant.CHANGE_PASSWORD;
+    },
     openConfirmRemovePasswordDialog: (state) => {
       state.isOpen = true;
       state.mode = DialogModesConstant.REMOVE_PASSWORD;
@@ -53,6 +57,7 @@ export const {
   openConfirmRemoveFolderDialog,
   setFolderToRemove,
   setPasswordToRemove,
+  openChangePasswordDialog,
 } = dialogSlice.actions;
 
 export default dialogSlice;
