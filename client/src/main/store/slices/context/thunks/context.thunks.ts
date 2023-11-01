@@ -93,7 +93,8 @@ export const changePassword = createAsyncThunk<void, string, {
       console.error('Clouldn\'t change password', e);
       toast.error('Couldn\'t change password');
     } finally {
-      thunkAPI.dispatch(setNavigationBlock(true));
+      thunkAPI.dispatch(setNavigationBlock(false));
+      thunkAPI.dispatch(closeDialog());
     }
   },
 );
