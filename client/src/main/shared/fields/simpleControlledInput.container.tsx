@@ -9,6 +9,7 @@ type PropsType = {
     placeholder: string;
     control: Control<any>,
     type?: string;
+    addonAfter?: React.ReactNode
 }
 
 const { Text } = Typography;
@@ -20,7 +21,7 @@ const StyledContainer = styled.div`
 `;
 
 const SimpleControlledInputContainer = ({
-  name, control, label, placeholder, type,
+  name, control, label, placeholder, type, addonAfter,
 }: PropsType) => (
   <Controller
     control={control}
@@ -31,6 +32,7 @@ const SimpleControlledInputContainer = ({
           {...field}
           placeholder={placeholder}
           size="large"
+          addonAfter={addonAfter}
           type={type}
           status={fieldState.invalid && 'error'}
         />

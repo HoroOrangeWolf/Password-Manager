@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { isNil } from 'lodash';
 import styled from 'styled-components';
 import { Button } from 'antd';
+import { CopyOutlined, EyeFilled, EyeOutlined } from '@ant-design/icons';
+import { toast } from 'react-toastify';
 import { MainStoreStateType } from '../../../store/types/mainStore.type';
 import { PasswordRequestType, PasswordType } from '../../../api/folder/types/password.type';
 import SimpleControlledInputContainer from '../../../shared/fields/simpleControlledInput.container';
 import SelectFolderContainer from './selectFolder.container';
-import { addPassword, removePassword, updatePassword } from '../../../store/slices/passwords/thunks/password.thunks';
+import { addPassword, updatePassword } from '../../../store/slices/passwords/thunks/password.thunks';
 import { selectIsNavigationBlock, selectMasterKey } from '../../../store/slices/context/selectors/context.selector';
 import { setNavigationBlock } from '../../../store/slices/context/context.slice';
 import { openConfirmRemovePasswordDialog, setPasswordToRemove } from '../../../store/slices/dialogs/dialog.slice';
@@ -57,12 +59,21 @@ const StyledForm = styled.form`
   gap: 15px;
 `;
 
+const StyledIconWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+`;
+
 const PasswordPanelContainer = (props: PropsType) => {
+  const [isPasswordNotHidden, setIsPasswordNotHidden] = useState(true);
   const isPasswordSelected = !isNil(props.currentPassword);
 
   const form = useForm({
     defaultValues: isPasswordSelected ? mapPasswordToRequest(props.currentPassword) : createDefaultState(props.currentFolderId),
   });
+
+  const password = form.watch('password');
 
   const handleRemovePassword = () => {
     props.setPasswordToRemove(props.currentPassword);
@@ -119,19 +130,40 @@ const PasswordPanelContainer = (props: PropsType) => {
       }
 
       await props.addPassword({ ...formData, masterKey: props.masterKey });
-    } catch (e) {
-      console.error(e);
     } finally {
       props.setNavigationBlock(false);
     }
   };
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(password);
+    toast.success('Copied password to clipboard');
+  };
+
+  const handleChangePasswordVisibility = () => {
+    setIsPasswordNotHidden(!isPasswordNotHidden);
+  };
+
+  const getPasswordIcons = () => (
+    <StyledIconWrapper>
+      <CopyOutlined onClick={handleCopy} />
+      {isPasswordNotHidden ? <EyeFilled onClick={handleChangePasswordVisibility} /> : <EyeOutlined onClick={handleChangePasswordVisibility} />}
+    </StyledIconWrapper>
+  );
 
   return (
     <StyledContainer onSubmit={form.handleSubmit(handleSubmit)}>
       <StyledForm>
         <SimpleControlledInputContainer name="name" label="Name" placeholder="Password entry name" control={form.control} />
         <SimpleControlledInputContainer name="login" label="Login" placeholder="Login" control={form.control} />
-        <SimpleControlledInputContainer name="password" label="Password" placeholder="Password" control={form.control} />
+        <SimpleControlledInputContainer
+          name="password"
+          label="Password"
+          type={isPasswordNotHidden ? 'password' : 'text'}
+          placeholder="Password"
+          addonAfter={getPasswordIcons()}
+          control={form.control}
+        />
         <SimpleControlledInputContainer name="pageUrl" label="Url" placeholder="Url" control={form.control} />
         <SelectFolderContainer control={form.control} />
         <ActionContainer>
